@@ -1,10 +1,15 @@
 from tkinter import Tk, BOTH, Canvas
+from typing import override
 
 
 class Point:
     def __init__(self, x: int, y: int) -> None:
         self.x: int = x
         self.y: int = y
+
+    @override
+    def __repr__(self) -> str:
+        return f"Point(x={self.x}, y={self.y})"
 
 
 class Line:
@@ -81,25 +86,43 @@ class Cell:
             )
             self.__win.draw_line(bottom)
 
+    def draw_move(self, to_cell: "Cell", undo: bool = False) -> None:
+        fill_color: str = "red"
+        if undo:
+            fill_color = "gray"
+
+        self_center: Point = self.get_center()
+        to_cell_center: Point = to_cell.get_center()
+
+        self.__win.draw_line(Line(self_center, to_cell_center), fill_color)
+
+    def get_center(self) -> Point:
+        dx: int = abs(self.__x1 - self.__x2)
+        dy: int = abs(self.__y1 - self.__y2)
+
+        return Point(self.__x1 + (dx // 2), self.__y1 + (dy // 2))
+
 
 def main():
     win = Window(800, 600)
 
-    cell: Cell = Cell(win)
-    cell.has_left_wall = False
-    cell.draw(50, 50, 100, 100)
+    cell1: Cell = Cell(win)
+    cell1.has_left_wall = False
+    cell1.draw(50, 50, 100, 100)
 
-    cell = Cell(win)
-    cell.has_right_wall = False
-    cell.draw(125, 125, 200, 200)
+    cell2 = Cell(win)
+    cell2.has_right_wall = False
+    cell2.draw(125, 125, 200, 200)
+    cell1.draw_move(cell2)
 
-    cell = Cell(win)
-    cell.has_bottom_wall = False
-    cell.draw(225, 225, 250, 250)
+    cell3 = Cell(win)
+    cell3.has_bottom_wall = False
+    cell3.draw(225, 225, 250, 250)
+    cell2.draw_move(cell3, undo=True)
 
-    cell = Cell(win)
-    cell.has_top_wall = False
-    cell.draw(300, 300, 500, 500)
+    cell4 = Cell(win)
+    cell4.has_top_wall = False
+    cell4.draw(300, 300, 500, 500)
 
     win.wait_for_close()
 
