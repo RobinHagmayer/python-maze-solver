@@ -11,8 +11,13 @@ def main():
     cell_size_x: int = (screen_x - 2 * margin) // num_cols
     cell_size_y: int = (screen_y - 2 * margin) // num_rows
 
-    win = Window(screen_x, screen_y)
-    _ = Maze(margin, margin, num_rows, num_cols, cell_size_x, cell_size_y, win, 10)
+    win: Window = Window(screen_x, screen_y)
+    maze: Maze = Maze(margin, margin, num_rows, num_cols, cell_size_x, cell_size_y, win)
+    print("maze created!")
+    if maze.solve():
+        print("maze is solved!")
+    else:
+        print("maze cannot be solved")
     win.wait_for_close()
 
 

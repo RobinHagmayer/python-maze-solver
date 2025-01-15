@@ -119,3 +119,52 @@ class Maze:
         for col in self._cells:
             for row in col:
                 row.visited = False
+
+    def _dfs(self, i: int, j: int) -> bool:
+        stack: list[tuple[int, int]] = [(i, j)]
+
+        while len(stack) > 0:
+            self._animate()
+            c: tuple[int, int] = stack.pop()
+            cc: int = c[0]
+            cr: int = c[1]
+            cell: Cell = self._cells[cc][cr]
+
+            if cell.visited:
+                continue
+
+            cell.visited = True
+
+            if c == (self._num_cols - 1, self._num_rows - 1):
+                return True
+
+            # left
+            if cc - 1 >= 0:
+                cell_left: Cell = self._cells[cc - 1][cr]
+                if not cell.has_left_wall and not cell_left.visited:
+                    cell.draw_move(cell_left)
+                    stack.append((cc - 1, cr))
+            # right
+            if cc + 1 < self._num_cols:
+                cell_right: Cell = self._cells[cc + 1][cr]
+                if not cell.has_right_wall and not cell_right.visited:
+                    cell.draw_move(cell_right)
+                    stack.append((cc + 1, cr))
+            # top
+            if cr - 1 >= 0:
+                cell_top: Cell = self._cells[cc][cr - 1]
+                if not cell.has_top_wall and not cell_top.visited:
+                    cell.draw_move(cell_top)
+                    stack.append((cc, cr - 1))
+            # bottom
+            if cr + 1 < self._num_rows:
+                cell_bottom: Cell = self._cells[cc][cr + 1]
+                if not cell.has_bottom_wall and not cell_bottom.visited:
+                    cell.draw_move(cell_bottom)
+                    stack.append((cc, cr + 1))
+
+
+        return False
+
+    def solve(self) -> bool:
+        return self._dfs(0, 0)
