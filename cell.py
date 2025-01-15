@@ -4,7 +4,7 @@ from graphics import Line, Point, Window
 class Cell:
     def __init__(
         self,
-        win: Window,
+        win: Window | None,
     ) -> None:
         self.has_left_wall: bool = True
         self.has_right_wall: bool = True
@@ -14,9 +14,12 @@ class Cell:
         self._y1: int = -1
         self._x2: int = -1
         self._y2: int = -1
-        self._win: Window = win
+        self._win: Window | None = win
 
     def draw(self, x1: int, y1: int, x2: int, y2: int) -> None:
+        if self._win is None:
+            return
+
         self._x1 = x1
         self._y1 = y1
         self._x2 = x2
@@ -31,12 +34,13 @@ class Cell:
             top: Line = Line(Point(self._x1, self._y1), Point(self._x2, self._y1))
             self._win.draw_line(top)
         if self.has_bottom_wall:
-            bottom: Line = Line(
-                Point(self._x1, self._y2), Point(self._x2, self._y2)
-            )
+            bottom: Line = Line(Point(self._x1, self._y2), Point(self._x2, self._y2))
             self._win.draw_line(bottom)
 
     def draw_move(self, to_cell: "Cell", undo: bool = False) -> None:
+        if self._win is None:
+            return
+
         fill_color: str = "red"
         if undo:
             fill_color = "gray"
